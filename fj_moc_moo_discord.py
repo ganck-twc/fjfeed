@@ -2,12 +2,13 @@
 Financial Juice MOO/MOC → Discord
 Polls the FJ RSS feed every 30 seconds and posts any MOO/MOC headlines to Discord.
 
-Setup:
-  1. pip install requests feedparser
-  2. Set your DISCORD_WEBHOOK_URL below
-  3. python fj_moc_moo_discord.py
+Railway setup:
+  1. Add DISCORD_WEBHOOK_URL as an environment variable in Railway
+  2. Add a Procfile: worker: python fj_moc_moo_discord.py
+  3. Deploy
 """
 
+import os
 import time
 import requests
 import feedparser
@@ -15,7 +16,7 @@ from datetime import datetime, timezone
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
 
-DISCORD_WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL_HERE"
+DISCORD_WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
 
 RSS_URL      = "https://www.financialjuice.com/feed.ashx?xy=rss"
 POLL_SECONDS = 30
@@ -84,10 +85,6 @@ def poll() -> None:
 # ── MAIN ──────────────────────────────────────────────────────────────────────
 
 def main() -> None:
-    if DISCORD_WEBHOOK_URL == "https://discord.com/api/webhooks/1479175999232020766/sCWU-ZlWWfEqrBJ1dyJlvQIpJa-pJ3Hwj2trciFNhIgoH6lcPCQ3g6M0e3krfphq-RJ1":
-        print("ERROR: Please set your DISCORD_WEBHOOK_URL in the script before running.")
-        return
-
     print(f"Starting FJ MOO/MOC monitor — polling every {POLL_SECONDS}s")
     print(f"Keywords: {KEYWORDS}")
     print(f"Feed:     {RSS_URL}\n")
